@@ -1,0 +1,22 @@
+/*  SIDEBAR  */
+
+.sidebar {
+	width: 25%;
+}
+
+/*  PRODUCT CARDS  */
+
+.product-card {
+	width: 50%;
+}
+
+/***
+	RESPONSIVE RULES
+***/
+
+@media screen and (max-width: 991px) {
+	.sidebar {
+		width: 0%;
+		display: none;	
+	}
+}

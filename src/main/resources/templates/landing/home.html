@@ -1,0 +1,134 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description"
+		content="Online Shopping for Computers, Electronics, Smartphones, Home Appliances and more">
+	
+	<!-- Bootstrap References -->
+	<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	
+	<!-- My References -->
+	<link rel="stylesheet" type="text/css" href="css/home.css"/>
+	<link rel="stylesheet" type="text/css" href="css/main.css"/>
+	
+	<title>MyOutlet Home Page</title>
+</head>
+
+<body>
+	
+	<!-- TopNav -->
+	<nav class="navbar navbar-expand-lg navbar-light"><div class="container"> <!-- sticky-top -->
+		
+		<a class="navbar-brand shadow-sm" th:href="@{/}">
+			<span style="color: red;">My</span>
+			<span style="color: black;">Outlet.ge</span>
+		</a>
+		
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		
+		<div class="collapse navbar-collapse" id="collapsibleNavbar">
+			<ul class="navbar-nav">
+				<li th:each="tempCategory : ${categories}" class="nav-item dropdown p-2">
+					<a class="nav-link dropdown-toggle" id="navbardrop" data-toggle="dropdown" href="#">
+						[[${tempCategory.name}]]
+					</a>
+					<div class="dropdown-menu shadow-lg">
+						<a th:each="tempSubCategory : ${tempCategory.subCategories}"
+						   th:href="@{/listProducts(subCategoryId=${tempSubCategory.id})}"
+						   class="dropdown-item">
+							[[${tempSubCategory.name}]]
+						</a>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div></nav> <!-- End of topNav -->
+	
+	<!-- Main container -->
+	<div class="container pt-3 mb-3">
+		
+		<!-- SearchBar -->
+		<form th:action="@{/searchProducts}" id="searchBar" class="form-inline input-group shadow-sm">
+			<input class="form-control" type="search"
+				   name="productName" placeholder="Search products" />
+			<div class="input-group-append">
+				<button class="btn btn-info" type="submit">Search</button>
+			</div>
+		</form> <!-- End of searchBar -->
+		
+		<!-- Products grid -->
+		<div class="card border-secondary mt-3 shadow-lg"><div class="card-body d-inline-flex flex-wrap">
+			
+			<!-- Product card -->
+			<div th:each="product : ${products}" class="card product-card mb-1">
+				
+				<!-- Carousel -->
+				<div th:id="'PC' + ${product.id}" class="carousel slide">
+					<div class="carousel-inner">
+						<div th:each="tempImage, iterstat : ${product.images}"
+							 th:class="${iterstat.index}==0  ? 'carousel-item active' : 'carousel-item'">
+							<img class="product-card-img" alt="Card image"
+								 th:src="*{'data:image/jpeg;base64,'+{tempImage.img}}">
+						</div>
+					</div>
+					<a class="carousel-control-prev" th:href="'#PC' + ${product.id}" role="buttom" data-slide="prev">
+						<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+						<span class="sr-only">Previous</span>
+					</a>
+					<a class="carousel-control-next" th:href="'#PC' + ${product.id}" role="buttom" data-slide="next">
+						<span class="carousel-control-next-icon" aria-hidden="true"></span>
+						<span class="sr-only">Next</span>
+					</a>
+				</div> <!-- End of carousel -->
+				
+				<!-- Product prices -->
+				<div class="card-img-overlay" th:if="${product.salePrice != product.price}">
+					<div class="row px-2 py-1">
+						<div class="price-tag badge-info shadow-lg">
+							<del>[[${product.price}]]₾</del>
+						</div>
+						<div class="price-tag badge-warning ml-auto shadow-lg">
+							-[[${product.salePercent}]]%
+						</div>
+					</div>
+					<div class="row px-2 py-1">
+						<div class="price-tag badge-danger shadow-lg">
+							[[${product.salePrice}]]₾
+						</div>
+					</div>
+				</div>
+				<div class="card-img-overlay" th:unless="${product.salePrice != product.price}">
+					<div class="row px-2 py-1">
+						<div class="price-tag badge-info shadow-lg">
+							[[${product.price}]]₾
+						</div>
+					</div>
+				</div>  <!-- End of product prices -->
+				
+				<!-- Product name -->
+				<div class="card-body" style="transform: rotate(0);">
+					<a th:href="@{/showProduct(productId=${product.id})}"
+					   class="card-title stretched-link h4">
+					   [[${product.name}]]
+					</a>
+				</div>
+				
+			</div> <!-- End of product card -->
+			
+		</div></div> <!-- End of products grid -->
+		
+	</div> <!-- End of main container -->
+	
+</body>
+
+</html>

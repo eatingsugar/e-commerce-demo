@@ -1,0 +1,58 @@
+.carousel {
+	height: 520px;
+}
+
+.carousel-item {
+	height: 400px;
+	text-align: center;
+	background-color: #e8e8e8;
+}
+
+.carousel-item img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+#PC .carousel-indicators {
+    position: static;
+    margin-top: 8px;
+}
+
+#PC .carousel-indicators li {
+    min-width: 70px;
+}
+
+#PC .carousel-indicators li img {
+    opacity: 0.5;
+}
+
+#PC .carousel-indicators li.active img {
+    opacity: 1;
+}
+
+#PC .carousel-indicators li:hover img {
+    opacity: 0.75;
+}
+
+/***
+	RESPONSIVE RULES
+***/
+
+@media screen and (max-width: 991px) {
+	.carousel {
+		height: 420px;
+		
+	}
+	.carousel-item {
+		height: 300px;
+	}
+}
+
+@media screen and (max-width: 767px) {
+	.carousel {
+		height: 320px;
+	}
+	.carousel-item {
+		height: 200px;
+	}
+}

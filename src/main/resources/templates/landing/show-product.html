@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+		content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description"
+		content="Online Shopping for Computers, Electronics, Smartphones, Home Appliances and more">
+
+    <!-- Bootstrap References -->
+	<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	
+	<!-- My References -->
+	<link rel="stylesheet" type="text/css" href="css/main.css"/>
+	<link rel="stylesheet" type="text/css" href="css/show-product.css"/>
+	
+	<title>[[${product.name}]]</title>
+</head>
+
+<body>
+	
+	<!-- TopNav -->
+	<nav class="navbar navbar-expand-lg navbar-light"><div class="container"> <!-- sticky-top -->
+		
+		<a class="navbar-brand shadow-sm" th:href="@{/}">
+			<span style="color: red;">My</span>
+			<span style="color: black;">Outlet.ge</span>
+		</a>
+		
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		
+		<div class="collapse navbar-collapse" id="collapsibleNavbar">
+			<ul class="navbar-nav">
+				<li th:each="tempCategory : ${categories}" class="nav-item dropdown p-2">
+					<a class="nav-link dropdown-toggle" id="navbardrop" data-toggle="dropdown" href="#">
+						[[${tempCategory.name}]]
+					</a>
+					<div class="dropdown-menu shadow-lg">
+						<a th:each="tempSubCategory : ${tempCategory.subCategories}"
+						   th:href="@{/listProducts(subCategoryId=${tempSubCategory.id})}"
+						   class="dropdown-item">
+							[[${tempSubCategory.name}]]
+						</a>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div></nav> <!-- End of topNav -->
+	
+	<!-- Main container -->
+	<div class="container pt-3 mb-3">
+		
+		<!-- BreadCrumbs -->
+		<ul class="breadcrumb mb-3 shadow-sm">
+			<li class="breadcrumb-item"><a th:href="@{/}">მთავარი</a></li>
+			<li class="breadcrumb-item">[[${category.name}]]</li>
+			<li class="breadcrumb-item">
+				<a th:href="@{/listProducts(subCategoryId=${subCategory.id})}">
+					[[${subCategory.name}]]
+				</a>
+			</li>
+			<li class="breadcrumb-item">
+				<a th:href="@{/advancedSearchProducts(
+									subCategoryId=${subCategory.id},
+									selectedBrands=${product.brand},
+									productName='',)}">
+					[[${product.brand}]]
+				</a>
+			</li>
+			<li class="breadcrumb-item">[[${product.name}]]</li>
+		</ul> <!-- End of breadCrumbs -->
+		
+		<!-- SearchBar -->
+		<form th:action="@{/advancedSearchProducts}" id="searchBar" class="form-inline input-group shadow-sm">
+			<input type="hidden" name="subCategoryId" th:value="${subCategory.id}" />
+			<input class="form-control" type="search"
+				   name="productName" th:placeholder="'Search in subcategory: ' + ${subCategory.name}" />
+			<div class="input-group-append">
+				<button class="btn btn-info" type="submit">Search</button>
+			</div>
+		</form> <!-- End of searchBar -->
+		
+		<hr>
+		
+		<!-- Product name -->
+		<div class="ml-4 mb-3">
+			<p class="h2"><strong> [[${product.name}]] </strong></p>
+		</div>
+		
+		<!-- Product -->
+		<div class="card border-secondary shadow-lg"><div class="card-body p-4">
+			
+			<div class="row">
+			
+				<!-- Carousel -->
+				<div th:id="PC" class="carousel slide col-lg-9" data-ride="carousel">
+					
+					<!-- The slideshow -->
+					<div class="carousel-inner">
+						<div th:each="tempImage, iterstat : ${product.images}"
+							 th:class="${iterstat.index}==0  ? 'carousel-item active' : 'carousel-item'">
+							
+							<img class="rounded" alt="Product image" 
+								 th:src="*{'data:image/jpeg;base64,'+{tempImage.img}}"> <!-- product-img -->
+						</div>
+					</div> <!-- End of slideshow -->
+					
+					<!-- Left and right controls -->
+					<a class="carousel-control-prev bg-light" href="#PC" role="buttom" data-slide="prev">
+						<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+						<span class="sr-only">Previous</span>
+					</a>
+					<a class="carousel-control-next bg-light" href="#PC" role="buttom" data-slide="next">
+						<span class="carousel-control-next-icon" aria-hidden="true"></span>
+						<span class="sr-only">Next</span>
+					</a> <!-- End of left and right controls -->
+					
+					<!-- Thumbnails -->
+					<ol class="carousel-indicators list-inline">
+						<li th:each="tempImage, iterstat : ${product.images}"
+							th:class="${iterstat.index}==0  ? 'list-inline-item active' : 'list-inline-item'">
+							
+							<a th:id="'carousel-selector-' + ${iterstat.index}"
+							   th:class="${iterstat.index}==0  ? 'selected' : ''"
+							   th:data-slide-to="${iterstat.index}" data-target="#PC">
+							   
+								<img class="img-fluid d-block" alt="Product thumbnails"
+									 th:src="*{'data:image/jpeg;base64,'+{tempImage.img}}"> <!-- thumbnail-img -->
+							</a>
+						</li>
+					</ol> <!-- End of thumbnails -->
+					
+				</div> <!-- End of carousel -->
+				
+				<!-- Prices -->
+				<div class="ml-auto mr-3" th:if="${product.salePrice != product.price}">
+					<span class="h1"><strong>[[${product.salePrice}]]</strong></span>
+					<span class="h4">₾</span>
+					<br>
+					<span class="h3" style="color: grey;"><strong><del>[[${product.price}]]</del></strong></span>
+					<span class="h5" style="color: grey;">₾</span>
+				</div>
+				<div class="ml-auto mr-3" th:unless="${product.salePrice != product.price}">
+					<span class="h1"><strong>[[${product.price}]]</strong></span>
+					<span class="h4">₾</span>
+				</div>  <!-- End of prices -->
+				
+			</div> <!-- End of row -->
+			
+			<hr>
+			
+			<!-- Description -->
+			<div class="ml-2">
+				<div class="col mb-2">
+					<span class="h4"><strong>Product name:</strong></span>
+					<span class="h5">[[${product.name}]]</span>
+				</div>
+				
+				<div class="col mb-2">
+					<span class="h4"><strong>Brand:</strong></span>
+					<span class="h5">[[${product.brand}]]</span>
+				</div>
+				
+				<br>
+				
+				<div class="col">
+					<p class="h4"><strong>Specifications:</strong></p>
+					<p class="h5">[[${product.detail}]]</p>
+				</div>
+			</div> <!-- End of description -->
+			
+		</div></div> <!-- End of product -->
+		
+	</div> <!-- End of main container -->
+
+</body>
+
+</html>

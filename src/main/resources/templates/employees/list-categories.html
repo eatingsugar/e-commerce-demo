@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+	<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+	
+	<title>Category Page</title>
+</head>
+
+<body>
+	
+	<div class="container">
+		
+		<div class="d-flex pt-4 justify-content-end">
+			<p class="h3 mr-auto">Category Page</p>
+			<form action="#" th:action="@{/logout}" method="POST">
+				User: <span sec:authentication="name" class="mr-3"></span>
+				Role(s): <span sec:authentication="principal.authorities" class="mr-3"></span>
+				<input type="submit" value="Logout" class="btn btn-outline-primary" />
+			</form>
+		</div>
+		<hr>
+		
+		<form th:action="@{/employees/searchSubCategories}" class="form-inline">
+			<a th:href="@{/employees/category/showFormForAdd}" 
+			   class="btn btn-outline-primary col-2 mr-3">
+				Add Category
+			</a>
+			<a th:href="@{/employees/subCategory/showFormForAdd}" 
+			   class="btn btn-outline-primary col-2">
+				Add Sub-Category
+			</a>
+			
+			<div class="form-group blu-margin col-3 ml-auto mr-sm-2">
+			    <select class="form-control col" name="categoryId" required>
+			    	<option th:value=0>Select Category:</option>
+			    	<option th:each="category : ${allCategories}"
+							th:value="${category.id}"
+							th:text="${category.name}">
+	    			</option>
+			    </select>
+			</div>
+			
+			<button class="btn btn-outline-info col-1" type="submit">Search</button>
+		</form>
+		
+		<hr>
+		
+		<table class="table table-hover">
+			<thead class="thead-dark">
+				<tr class="row">
+					<th class="col-4 text-center">Category</th>
+					<th class="col-6 text-center">Sub Categories</th>
+					<th class="col-2 text-center">Action</th>
+				</tr>
+			</thead>
+			
+			<tbody>
+				<tr th:each="tempCategory : ${categories}" class="row">
+					
+					<!-- Categories -->
+					<td th:text="${tempCategory.name}" class="col-4 pl-4"/>
+					
+					<!-- Sub Categories -->
+					<td class="col-6">
+						<table class="table table-striped table-sm table-hover">
+							<tr th:each="tempSubCategory : ${tempCategory.subCategories}" class="row">
+								<td th:text="${tempSubCategory.name}" class="col-8 pl-4"/>
+								<td class="col-4 text-center">
+									<div sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')">
+										<a th:href="@{/employees/subCategory/showFormForUpdate(subCategoryId=${tempSubCategory.id})}"
+										   class="btn btn-info btn-sm" style="width: 65px;">
+											Update
+										</a>
+										<a th:href="@{/employees/subCategory/delete(subCategoryId=${tempSubCategory.id})}"
+										   class="btn btn-danger btn-sm" style="width: 65px;"
+										   onclick="if (!(confirm('Are you sure you want to delete this sub-category? It will delete all products in it!!!'))) return false">
+											Delete
+										</a>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</td>
+					
+					<!-- Actions -->
+					<td class="col-2 text-center">
+						<div sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')">
+							<a th:href="@{/employees/category/showFormForUpdate(categoryId=${tempCategory.id})}"
+							   class="btn btn-info btn-sm" style="width: 65px;">
+								Update
+							</a>
+							<a th:href="@{/employees/category/delete(categoryId=${tempCategory.id})}"
+							   class="btn btn-danger btn-sm" style="width: 65px;"
+							   onclick="if (!(confirm('Are you sure you want to delete this category? It will delete all sub-categories and all products in it!!!'))) return false">
+								Delete
+							</a>
+						</div>
+					</td>
+					
+				</tr>
+			</tbody>
+		</table>
+		
+		<hr>
+		<a th:href="@{/employees/listProducts}" class="pb-4">Back to Product List</a>
+		
+	</div>
+	
+</body>
+
+</html>
